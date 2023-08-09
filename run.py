@@ -30,6 +30,7 @@ def get_sales_data():
         
         sales_data = data_str.split(",")
         if validate_data(sales_data):
+
             print(f"Data is valid")
             break
     
@@ -48,5 +49,18 @@ def validate_data(values):
         return False
     
     return True
-        
+
+def update_sales_worksheet(data):
+    """update sales worksheet, new row with list data provided"""
+    print("updating sales worksheet....")
+    sales_worksheet = SHEET.worksheet("sales")
+    sales_worksheet.append_row(data)
+    print("sales Worksheet updated successfully \n")
+    
+    
+    
+    
 data = get_sales_data()
+sales_data = [int(number) for number in data]
+
+update_sales_worksheet(sales_data)
