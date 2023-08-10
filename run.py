@@ -3,7 +3,6 @@
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 
 import gspread
-from pprint import pprint
 from google.oauth2.service_account import Credentials
 
 SCOPE = [
@@ -27,7 +26,7 @@ def get_sales_data():
         print("Please enter sales data from the last market")
         print("Data should be six numbers, separated by a comma")
         print("Example: 10,20,30,40,50,60 \n")
-        data_str = input("Please enter sales data")
+        data_str = input("Please enter sales data: \n")
         
         sales_data = data_str.split(",")
         if validate_data(sales_data):
@@ -59,7 +58,8 @@ def validate_data(values):
 #     print("sales Worksheet updated successfully \n")
     
 def update_worksheet(data, sheet):
-    print(f"updating {sheet}")
+
+    print(f"updating {sheet.capitalize()}")
     worksheet_to_update = SHEET.worksheet(sheet)
     worksheet_to_update.append_row(data)
     print(f"{sheet.capitalize()} updated successfully")
@@ -92,7 +92,18 @@ def get_last_5_sales():
         columns_array.append(column[-5:])
     
     return columns_array
-    
+
+def calc_stock_data(data):
+    """Calculates average of last 5 sales"""
+    print("Calculating stock data... \n")
+    new_stock_data = []
+    for columns in data:
+        int_column = [int(num) for num in columns]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        stock_num = round(stock_num)
+        new_stock_data.append(stock_num)
+    return new_stock_data
 def main():
     """Runs all program functions"""
     data = get_sales_data()
@@ -103,10 +114,9 @@ def main():
     update_worksheet(sales_data, "sales")
     update_worksheet(new_surplus_data, "surplus")
     get_last_5_sales()
-    
-
+    sales_columns = get_last_5_sales()
+    stock_data = calc_stock_data(sales_columns)
+    update_worksheet(stock_data, "stock")
     
 print("Welcome...")
-sales_columns = get_last_5_sales()
-
-    
+main()
