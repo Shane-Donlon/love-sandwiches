@@ -51,14 +51,19 @@ def validate_data(values):
     
     return True
 
-def update_sales_worksheet(data):
-    """update sales worksheet, new row with list data provided"""
-    print("updating sales worksheet....")
-    sales_worksheet = SHEET.worksheet("sales")
-    sales_worksheet.append_row(data)
-    print("sales Worksheet updated successfully \n")
+# def update_sales_worksheet(data):
+#     """update sales worksheet, new row with list data provided"""
+#     print("updating sales worksheet....")
+#     sales_worksheet = SHEET.worksheet("sales")
+#     sales_worksheet.append_row(data)
+#     print("sales Worksheet updated successfully \n")
     
-
+def update_worksheet(data, sheet):
+    print(f"updating {sheet}")
+    worksheet_to_update = SHEET.worksheet(sheet)
+    worksheet_to_update.append_row(data)
+    print(f"{sheet.capitalize()} updated successfully")
+    
 def calculate_surplus_data(sales_row):
     """Calculates if there was surplus
     - Positive surplus indicates was
@@ -74,18 +79,34 @@ def calculate_surplus_data(sales_row):
         surplus_data.append(surplus)
     return surplus_data
 
-def add_surplus_data_to_worksheet(data):
-    """Adds surplus data to worksheet in a new row"""
-    surplus_sheet = SHEET.worksheet("surplus")
-    surplus_sheet.append_row(data)
+# def add_surplus_data_to_worksheet(data):
+#     """Adds surplus data to worksheet in a new row"""
+#     surplus_sheet = SHEET.worksheet("surplus")
+#     surplus_sheet.append_row(data)
+
+def get_last_5_sales():
+    sales = SHEET.worksheet("sales")
+    columns_array = []
+    for ind in range(1,7):
+        column = sales.col_values(ind)
+        columns_array.append(column[-5:])
+    
+    return columns_array
     
 def main():
     """Runs all program functions"""
     data = get_sales_data()
     sales_data = [int(number) for number in data]
-    update_sales_worksheet(sales_data)
+    # update_sales_worksheet(sales_data)
     new_surplus_data = calculate_surplus_data(sales_data)
-    add_surplus_data_to_worksheet(new_surplus_data)
+    # add_surplus_data_to_worksheet(new_surplus_data)
+    update_worksheet(sales_data, "sales")
+    update_worksheet(new_surplus_data, "surplus")
+    get_last_5_sales()
+    
+
+    
 print("Welcome...")
-main()
+sales_columns = get_last_5_sales()
+
     
